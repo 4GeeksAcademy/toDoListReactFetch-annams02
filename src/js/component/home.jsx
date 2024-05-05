@@ -18,6 +18,7 @@ const Home = () => {
 	const pulsarEnter = (e) => {
 		if (e.key === "Enter" && inputTarea.trim()   !== "") { // controlar el enter, .trim es para quitar espacios.  así no se me guardará nueva tarea con espacios vacíos solo
 			crearTarea(inputTarea); 
+			setInputTarea("");
 		}
 	};
 
@@ -41,13 +42,31 @@ const Home = () => {
 			.then(async (response) => {
 				const jsonResponse = await response.json();
 				setListaTareas([...listaTareas, {
+					"id": jsonResponse.id,
 					"label":taskName,                  // esto lo saco de la documentación de la API (/todo/username) la label le doy valor taskName pq es el nombre del parametro de la l.24, y la llamo en crearTarea (l20). 
 					"is_done": false 
 				}]);
 			})
-			.then((result) => console.log(result))
 			.catch((error) => console.error(error));
 
+	}
+
+	const deleteItems = (tareaId) => {
+		const requestOptions = {
+			method: "DELETE",
+			redirect: "follow"
+		  };
+		  
+		  fetch(`https://playground.4geeks.com/todo/todos/${tareaId}`, requestOptions)
+			.then((response) => {
+				if (response.ok) {
+					setListaTareas(listaTareas.filter ((tarea) => {
+						return tareaId != tarea.id;
+					}));
+				}
+
+			})
+			.catch((error) => console.error(error));
 	}
 
 
@@ -62,7 +81,6 @@ const Home = () => {
 				const jsonResponse = await response.json();
 				setListaTareas(jsonResponse.todos);
 			})
-			.then((result) => console.log(result))
 			.catch((error) => console.error(error));
 	}, [])
 	
@@ -75,7 +93,7 @@ const Home = () => {
 				<h1><strong>TO DO LIST</strong></h1>
 				<ul>
 					<li><input className= "form-control m-auto" type="text" onChange={escribirInput} onKeyDown={pulsarEnter} value={inputTarea} placeholder="What do you need in your to do list?" ></input> </li>
-					{listaTareas.map((tarea, index) => <li key={index}>{tarea.label} <button onClick={() => deleteItems (index)}><i className="fa-solid fa-trash"></i></button></li>)}
+					{listaTareas.map((tarea, index) => <li key={index}>{tarea.label} <button onClick={() => deleteItems(tarea.id)}><i className="fas fa-trash"></i></button></li>)}
 			
 				</ul>	
 			</div>

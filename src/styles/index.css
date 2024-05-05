@@ -10,3 +10,21 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
+body {
+    background-color: rgb(233, 218, 247);
+}
+
+ul li {
+    list-style:none;
+    padding: 10px;
+
+}
+button {
+    border-radius: 30px;
+    background-color: rgb(187, 150, 221);
+    margin-left: 20px;
+}
+.total {
+    font-weight: bold;
+    font-size: 20px;
+}
